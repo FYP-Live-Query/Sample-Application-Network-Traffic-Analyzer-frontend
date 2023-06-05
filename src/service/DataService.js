@@ -1,22 +1,34 @@
 import axios from 'axios';
-// FOR t IN NetworkTrafficTable SORT t.traffic DESC LIMIT 5 RETURN t
 
-class DataService{
+class DataService {
+  postData() {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      method: 'POST' // Set the method to 'POST'
+    };
 
-    postData(){
-      return axios.post('http://localhost:8081/publish', { 
-        query: 'ELECT ip@string,browser@string,date@string, time@string, traffic@int, eventTimestamp@long FROM networkTraffic',
-        id: "QWERTY"
-      });
-
-    }
-
-    postQuery(query) {
-      return axios.post('http://localhost:8081/setQuery', { 
-        query: query,
-        id: "QWERTY"
-      });
-    }
+    return axios.post('http://52.188.147.245:8081/publish', {
+      query: 'SELECT ip@string,browser@string,date@string,time@string,traffic@int,eventTimestamp@long FROM networkTraffic',
+      id: 'QWERTY',
+    }, config);
   }
-  
+
+  postQuery(query) {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+    };
+
+    return axios.post('http://52.188.147.245:8081/setQuery', {
+      query: query,
+      id: 'QWERTY',
+    }, config);
+  }
+}
+
 export default new DataService();

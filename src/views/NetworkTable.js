@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 import DataService from "../service/DataService";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import Tooltip from '@mui/material/Tooltip';
-const serverBaseURL = "http://localhost:8081";
+const serverBaseURL = "http://52.188.147.245:8081";
 
 function createData(source, date, time, traffic) {
   return { source, date, time, traffic };
@@ -34,8 +34,8 @@ function DataTable() {
     }
 
     const fetchData = async () => {
-      await DataService.postData();
-      const eventSource = await fetchEventSource(`${serverBaseURL}/orderInfo?userId=QWERTY`, {
+      // await DataService.postData();
+      const eventSource = await fetchEventSource(`${serverBaseURL}/orderInfo`, {
         method: "GET",
         headers: {
           Accept: "text/event-stream",
@@ -53,7 +53,7 @@ function DataTable() {
         },
         onmessage(event) {
           const parsedData = JSON.parse(event.data);
-
+          parsedData[1] = new Date().getTime() - parsedData[1];
           if (isMounted) {
             setRows(parsedData);
             setAllRows(prevRows => {
@@ -102,10 +102,10 @@ function DataTable() {
             <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               <TableCell component="th" scope="row">{row[0]}</TableCell>
               <TableCell align="right" >{row[1]}</TableCell>
-              <TableCell align="right" >{row[2]}</TableCell>
+              <TableCell align="right" >{}</TableCell>
               <TableCell align="right">{(new Date(parseInt(row[4]))).toTimeString().substring(0,9)}</TableCell>
               <TableCell align="right">{Math.round(row[3]/1000)/1000}GB</TableCell>
-              <TableCell component="th" scope="row">{currentTimeInUTC}</TableCell>
+              <TableCell component="th" scope="row">{}</TableCell>
             </TableRow>
           ))}
         </TableBody>
